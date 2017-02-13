@@ -1,0 +1,4 @@
+vendor/graphviz*
+*.la
+.DS_Store
+
