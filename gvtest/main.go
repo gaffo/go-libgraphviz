@@ -11,7 +11,7 @@ func main() {
 
 	fmt.Println("GV Initted")
 
-	g := graphviz.NewGraph("g", graphviz.AGDIRECTED)
+	g := graphviz.NewGraph("g", graphviz.LAYOUT_DOT, graphviz.AGDIRECTED)
 	n := graphviz.NewNode(g, "n", 1)
 	m := graphviz.NewNode(g, "m", 1)
 	graphviz.NewEdge(g, n, m, "label", 1)

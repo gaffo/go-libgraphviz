@@ -3,11 +3,12 @@ package graphviz
 import ()
 
 // #cgo CFLAGS: -I${SRCDIR}/vendor/graphviz_install/include/graphviz
-// #cgo LDFLAGS: ${SRCDIR}/libgvc_C.a ${SRCDIR}/libcgraph_C.a ${SRCDIR}/libcdt_C.a ${SRCDIR}/libpathplan_C.a -lexpat -lz -lm -lltdl
+// #cgo LDFLAGS: ${SRCDIR}/libgvc_C.a ${SRCDIR}/libcgraph_C.a ${SRCDIR}/libcdt_C.a ${SRCDIR}/libpathplan_C.a ${SRCDIR}/libgvplugin_core_C.a ${SRCDIR}/libgvplugin_dot_layout_C.a -lexpat -lz -lm -lltdl
 // #include "gvc.h"
 import "C"
 
 var AGDIRECTED = C.Agdirected
+var LAYOUT_DOT = "dot"
 
 type Graphviz struct {
 	gv *C.GVC_t
@@ -15,7 +16,6 @@ type Graphviz struct {
 
 func NewGraphviz() *Graphviz {
 	gv := C.gvContext()
-	C.gvParseArgs(gv, 0, nil)
 	return &Graphviz{
 		gv: gv,
 	}
@@ -37,11 +37,15 @@ func (this *Graphviz) FreeLayout(graph *Graph) {
 	C.gvFreeLayout(this.gv, graph.g)
 }
 
+func (this *Graphviz) Layout(graph *Graph, layout string) {
+	C.gvLayout(this.gv, graph.g, C.CString(layout))
+}
+
 type Graph struct {
 	g *C.Agraph_t
 }
 
-func NewGraph(text string, desc C.Agdesc_t) *Graph {
+func NewGraph(text, layout string, desc C.Agdesc_t) *Graph {
 	g := C.agopen(C.CString(text), desc, nil)
 	return &Graph{
 		g: g,
