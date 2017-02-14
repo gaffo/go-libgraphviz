@@ -1,10 +1,18 @@
 GRAPHVIZ_COMMIT ?= 27e3785
 
-all: libgvc.la
+all: libgvc.la cgo
+
+cgo:
+	go build -x main.go
+
+test: fmt
+	go test -v
+
+fmt:
+	go fmt *.go > /dev/null
 
 libgvc.la: vendor/graphviz
-	cp vendor/graphviz_install/lib/*.la .
-	cp vendor/graphviz_install/lib/graphviz/*.la .
+	find vendor/graphviz/ -name "*.a" | xargs -I{} cp {} .
 
 vendor/graphviz:
 	mkdir -p vendor
