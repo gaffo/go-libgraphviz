@@ -1,4 +1,6 @@
 vendor/graphviz*
 *.la
 .DS_Store
+*.a
 
+*.swp

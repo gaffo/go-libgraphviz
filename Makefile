@@ -1,9 +1,9 @@
 GRAPHVIZ_COMMIT ?= 27e3785
 
-all: libgvc.la cgo
+all: libgvc_C.a install
 
-cgo:
-	go build -x main.go
+install:
+	go install -x github.com/gaffo/go-libgraphviz/gvtest/...
 
 test: fmt
 	go test -v
@@ -11,7 +11,7 @@ test: fmt
 fmt:
 	go fmt *.go > /dev/null
 
-libgvc.la: vendor/graphviz
+libgvc_C.a: vendor/graphviz
 	find vendor/graphviz/ -name "*.a" | xargs -I{} cp {} .
 
 vendor/graphviz:
@@ -19,6 +19,6 @@ vendor/graphviz:
 	git clone https://github.com/ellson/graphviz.git vendor/graphviz
 	cd vendor/graphviz && git reset --hard && git clean -fdx
 	cd vendor/graphviz && git checkout ${GRAPHVIZ_COMMIT}
-	cd vendor/graphviz && ./autogen.sh && ./configure --prefix $(CURDIR)/vendor/graphviz_install
+	cd vendor/graphviz && ./autogen.sh && ./configure --prefix $(CURDIR)/vendor/graphviz_install --enable-perl=no
 	cd vendor/graphviz && mkdir $(CURDIR)/vendor/graphviz_install
 	cd vendor/graphviz && make && make install
